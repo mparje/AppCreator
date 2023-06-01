@@ -24,7 +24,7 @@ def main():
         if variable not in st.session_state:
             st.session_state[variable] = ''
         
-    st.title("Streamlit Chatbot Maker🤯")
+    st.title("Streamlit Chatbot Maker")
     st.markdown("Welcome to the future of app creation! This is an LLM-Powered platform that effortlessly crafts other LLM-Powered applications.")
 
     app_user_input = st.text_area(label= "Describe the app you need below: ", key= "appinput",
