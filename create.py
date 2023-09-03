@@ -1,10 +1,10 @@
-#import libraries
+# Import libraries
 import streamlit as st
 from langchain.embeddings import OpenAIEmbeddings
 from langchain.llms import OpenAI
 from langchain.prompts import PromptTemplate
 from langchain import PromptTemplate
-from  langchain import PromptTemplate, LLMChain
+from langchain import PromptTemplate, LLMChain
 from langchain.memory import ConversationBufferMemory
 from langchain.chat_models import ChatOpenAI
 from streamlit_extras.switch_page_button import switch_page
@@ -17,7 +17,7 @@ api_key = st.sidebar.text_input("Enter your OpenAI API key", type="password")
 if not api_key:
     st.warning("Please enter a valid API key to continue.")
 else:
-    openai.api_key = api
+    openai.api_key = api_key
     # Continuar con el resto del código que utiliza la clave de API
 
 def main():
