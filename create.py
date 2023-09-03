@@ -11,7 +11,14 @@ from streamlit_extras.switch_page_button import switch_page
 import ast
 from langchain import OpenAI
 
-api = st.secrets["OPENAI_KEY"]
+# Configurar la clave de la API de OpenAI
+api_key = st.sidebar.text_input("Enter your OpenAI API key", type="password")
+
+if not api_key:
+    st.warning("Please enter a valid API key to continue.")
+else:
+    openai.api_key = api_key
+    # Continuar con el resto del código que utiliza la clave de API
 
 def main():
     
