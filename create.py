@@ -99,22 +99,28 @@ def created():
 
         if st.button("Enter"):
                             
+
+
             custom_prompt2 = PromptTemplate(template=st.session_state.system_prompt, input_variables=["question", "chat_history"])
 
-
             chain2 = LLMChain(
-            llm = ChatOpenAI (
-                temperature=0.5, 
-                model_name="gpt-3.5-turbo",
-                openai_api_key=openai.api_key,  # Usar la clave de API proporcionada por el usuario
+                llm=ChatOpenAI(
+                    temperature=0.5,
+                    model_name="gpt-3.5-turbo",
+                    openai_api_key=openai.api_key,
                 ),
-            prompt=custom_prompt2,
-            verbose="False",
-            memory = st.session_state.memory
-            ) 
+                prompt=custom_prompt2,
+                verbose="False",
+                memory=st.session_state.memory,
+            )
             
-            output = chain2.run(question=user_input, chat_history = st.session_state["memory"], return_only_outputs=True)
-            
+            output = chain2.run(
+                question=user_input,
+                chat_history=st.session_state.memory["chat_history"],  # Corregir la referencia a la memoria
+                return_only_outputs=True,
+            )
+
+                  
             st.session_state.past.append(user_input)
             st.session_state.generated.append(output)
 
