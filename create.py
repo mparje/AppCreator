@@ -101,6 +101,7 @@ def created():
                             
             custom_prompt2 = PromptTemplate(template=st.session_state.system_prompt, input_variables=["question", "chat_history"])
 
+
             chain2 = LLMChain(
             llm = ChatOpenAI (
                 temperature=0.5, 
