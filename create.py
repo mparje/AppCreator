@@ -15,19 +15,31 @@ def main():
     st.title("Streamlit Chatbot Maker🤯")
     st.markdown("Welcome to the future of app creation! This is an LLM-Powered platform that effortlessly crafts other LLM-Powered applications.")
 
-    # Add an input field for the API key
-    api_key = st.text_input("Enter your OpenAI API key:")
+    # Create a two-column layout
+    col1, col2 = st.beta_columns(2)
 
-    if st.button("Create"):
-        # Check if the API key is provided
-        if not api_key:
-            st.error("Please enter your OpenAI API key.")
-            return
+    # In the left column (col1), place the input field for the API key
+    with col1:
+        api_key = st.text_input("Enter your OpenAI API key:")
 
-        app_user_input = st.text_area(label="Describe the app you need below: ", key="appinput",
-                                      placeholder="Eg. An app that gives me YouTube video ideas about a given topic...")
+    with col2:
+        if st.button("Create"):
+            # Check if the API key is provided
+            if not api_key:
+                st.error("Please enter your OpenAI API key.")
+                return
 
-        # Rest of your code
+            app_user_input = st.text_area(label="Describe the app you need below: ", key="appinput",
+                                          placeholder="Eg. An app that gives me YouTube video ideas about a given topic...")
+
+            # Rest of your code
+
+def created():
+    # Rest of your code
+
+
+
+
 
 def created():
     # Rest of your code
