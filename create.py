@@ -1,3 +1,37 @@
+# Import libraries
+import streamlit as st
+from langchain.embeddings import OpenAIEmbeddings
+from langchain.llms import OpenAI
+from langchain.prompts import PromptTemplate
+from langchain import PromptTemplate
+from langchain import PromptTemplate, LLMChain
+from langchain.memory import ConversationBufferMemory
+from langchain.chat_models import ChatOpenAI
+from streamlit_extras.switch_page_button import switch_page
+import ast
+from langchain import OpenAI
+
+def main():
+    st.title("Streamlit Chatbot Maker🤯")
+    st.markdown("Welcome to the future of app creation! This is an LLM-Powered platform that effortlessly crafts other LLM-Powered applications.")
+
+    # Add an input field for the API key
+    api_key = st.text_input("Enter your OpenAI API key:")
+
+    if st.button("Create"):
+        # Check if the API key is provided
+        if not api_key:
+            st.error("Please enter your OpenAI API key.")
+            return
+
+        app_user_input = st.text_area(label="Describe the app you need below: ", key="appinput",
+                                      placeholder="Eg. An app that gives me YouTube video ideas about a given topic...")
+
+        # Rest of your code
+
+def created():
+    # Rest of your code
+
 #import libraries
 import streamlit as st
 from langchain.embeddings import OpenAIEmbeddings
