@@ -12,7 +12,8 @@ import ast
 from langchain import OpenAI
 import os
 
-api = get.env["OPENAI_KEY"]
+openai.api_key = os.environ.get("OPENAI_API_KEY")
+
 
 def main():
     
