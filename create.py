@@ -27,9 +27,8 @@ from langchain.memory import ConversationBufferMemory
 from langchain.chat_models import ChatOpenAI
 from streamlit_extras.switch_page_button import switch_page
 import ast
-from langchain import OpenAI
-
-api = st.secrets["OPENAI_KEY"]
+# Aquí debes definir tu clave de API de OpenAI directamente (reemplaza 'tu_clave_de_api_aqui' con tu clave real)
+api = 'tu_clave_de_api_aqui'
 
 def main():
     
@@ -148,8 +147,4 @@ def created():
 def app():
     if st.session_state.get("state", "main") == "main":
         main()
-    elif st.session_state["state"] == "created":
-        created()
-
-if __name__ == "__main__":
-    app()
+   
