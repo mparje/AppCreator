@@ -10,18 +10,8 @@ from langchain.chat_models import ChatOpenAI
 from streamlit_extras.switch_page_button import switch_page
 import ast
 from langchain import OpenAI
-import os
 
-# Configurar la clave de la API de OpenAI
-api_key = st.text_input("Enter your OpenAI API key", type="password")
-
-if not api_key:
-    st.warning("Please enter a valid API key to continue.")
-else:
-    openai.api_key = api_key
-    # Continuar con el resto del código que utiliza la clave de API
-
-
+api = st.secrets["OPENAI_KEY"]
 
 def main():
     
@@ -32,7 +22,7 @@ def main():
         if variable not in st.session_state:
             st.session_state[variable] = ''
         
-    st.title("Streamlit Chatbot Maker")
+    st.title("Streamlit Chatbot Maker🤯")
     st.markdown("Welcome to the future of app creation! This is an LLM-Powered platform that effortlessly crafts other LLM-Powered applications.")
 
     app_user_input = st.text_area(label= "Describe the app you need below: ", key= "appinput",
