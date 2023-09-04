@@ -10,8 +10,9 @@ from langchain.chat_models import ChatOpenAI
 from streamlit_extras.switch_page_button import switch_page
 import ast
 from langchain import OpenAI
+import os
 
-api = st.secrets["OPENAI_KEY"]
+api = get.env["OPENAI_KEY"]
 
 def main():
     
