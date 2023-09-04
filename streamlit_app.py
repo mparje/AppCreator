@@ -22,24 +22,24 @@ def main():
         if variable not in st.session_state:
             st.session_state[variable] = ''
         
-    st.title("Creador de Chatbots para Streamlit🤯")
-    st.markdown("¡Bienvenido al futuro de la creación de aplicaciones! Esta es una plataforma alimentada por LLM que crea sin esfuerzo otras aplicaciones alimentadas por LLM.")
+    st.title("Creador de Chatbots con Streamlit 🤯")
+    st.markdown("¡Bienvenido al futuro de la creación de aplicaciones! Esta plataforma está impulsada por LLM y crea aplicaciones impulsadas por LLM de manera eficiente.")
 
     app_user_input = st.text_area(label="Describe la aplicación que necesitas a continuación: ", key="appinput",
-            placeholder="Ej. Una aplicación que me dé ideas para videos de YouTube sobre un tema dado...")
+            placeholder="Por ejemplo, una aplicación que me dé ideas para videos de YouTube sobre un tema dado...")
 
     if st.button("Crear"):
         
-        app_system_prompt = """Eres streamlitGPT y tu trabajo es ayudar a un usuario a generar una aplicación de streamlit LLM simple. El usuario te describirá lo que hará la aplicación. Luego tomarás esa descripción y generarás un Nombre Divertido, un emoji para la aplicación, una descripción de la aplicación y el sistema de indicaciones para el LLM. Deberás usar este formato exacto como se muestra a continuación para las variables.
+        app_system_prompt = """Eres streamlitGPT y tu trabajo es ayudar a un usuario a generar una aplicación Streamlit LLM simple. El usuario te describirá lo que hará la aplicación. Luego, tomarás esa descripción y generarás un nombre divertido, un emoji para la aplicación, una descripción de la aplicación y el sistema de indicaciones para el LLM. Utilizarás este formato exacto como se muestra a continuación para las variables. 
 
-        Tu salida debe ser un diccionario de Python que solo incluya estas variables y nada más. Preséntalo como código Python.
+        Tu salida debe ser un diccionario en Python que incluya solo estas variables y nada más. Muéstralo como código Python. 
 
-        'app_name': "Aquí debería ir el nombre de la aplicación como una cadena, siempre agrega emojis",
-        'app_emoji': "Aquí debería ir el emoji que mejor se adapte al nombre de la aplicación",
-        'app_description': "Aquí debería ir una descripción de la aplicación como una cadena. Sé divertido e ingenioso",
-        'system_prompt': "Eres un chatbot llamado [nombre de la aplicación aquí] que ayuda al humano con [describe lo que hará la aplicación]. Tu trabajo es [dale su rol].\nHistorial del chat: [agrega la variable de entrada llamada chat_history delimitada por llaves] \nPregunta del usuario: [agrega una variable de entrada llamada question delimitada por llaves]",
+        'app_name': "El nombre de la aplicación debe ir aquí como una cadena, siempre añade emojis",
+        'app_emoji': "El emoji que mejor se adapte al nombre de la aplicación debe ir aquí",
+        'app_description': "Una descripción de la aplicación debe ir aquí como una cadena. Sé divertido e ingenioso",
+        'system_prompt': "Eres un chatbot llamado [nombre de la aplicación aquí] que ayuda a los humanos con [describe lo que hará la aplicación]. Tu trabajo es [dale su función].\nHistorial del chat: [agrega una variable de entrada llamada chat_history delimitada por llaves] \nPregunta del usuario: [agrega una variable de entrada llamada question delimitada por llaves]",
         'user_input_label': "[agrega una etiqueta para la caja de entrada aquí]",
-        'placeholder': "Crea un marcador de posición para la caja de entrada de preguntas, esto debería ser un ejemplo relevante de entrada de usuario",
+        'placeholder': "Crea un marcador de posición para la caja de entrada de preguntas, esto debe ser un ejemplo relevante de entrada de usuario",
         
         {app_question}
         """
@@ -66,25 +66,25 @@ def main():
         st.session_state.placeholder = app_output['placeholder']
         
         # Cambiar la variable de estado después de almacenar las variables
-        st.session_state["state"] = "creado"
+        st.session_state["state"] = "created"
         
         st.experimental_rerun()
   
-def creado():
+def created():
     # Verificar el valor de la variable de estado
-    if st.session_state["state"] == "creado":
+    if st.session_state["state"] == "created":
         
-        if "generado" not in st.session_state:
-            st.session_state["generado"] = []
+        if "generated" not in st.session_state:
+            st.session_state["generated"] = []
 
-        if "pasado" not in st.session_state:
-            st.session_state["pasado"] = []
+        if "past" not in st.session_state:
+            st.session_state["past"] = []
 
         st.title(st.session_state.app_name)
         st.markdown(f"{st.session_state.app_emoji} {st.session_state.app_description}")
 
-        if "memoria" not in st.session_state:
-            st.session_state["memoria"] = ConversationBufferMemory(memory_key="chat_history", input_key="question")
+        if "memory" not in st.session_state:
+            st.session_state["memory"] = ConversationBufferMemory(memory_key="chat_history", input_key="question")
 
         user_input = st.text_input(label=st.session_state.user_input_label, placeholder=st.session_state.placeholder)
 
@@ -100,27 +100,27 @@ def creado():
                 ),
                 prompt=custom_prompt2,
                 verbose="False",
-                memory=st.session_state.memoria
+                memory=st.session_state.memory
             ) 
             
             output = chain2.run(question=user_input, chat_history=st.session_state["memory"], return_only_outputs=True)
             
-            st.session_state.pasado.append(user_input)
-            st.session_state.generado.append(output)
+            st.session_state.past.append(user_input)
+            st.session_state.generated.append(output)
 
             st.markdown(output)
             
-            if st.session_state["generado"]:
+            if st.session_state["generated"]:
                 with st.expander("Ver Historial de Chat"):
-                    for i in range(len(st.session_state["generado"]) - 1, -1, -1):
-                        st.markdown(st.session_state["pasado"][i])
-                        st.markdown(st.session_state["generado"][i])
+                    for i in range(len(st.session_state["generated"]) - 1, -1, -1):
+                        st.markdown(st.session_state["past"][i])
+                        st.markdown(st.session_state["generated"][i])
 
-def aplicacion():
+def app():
     if st.session_state.get("state", "main") == "main":
         main()
-    elif st.session_state["state"] == "creado":
-        creado()
+    elif st.session_state["state"] == "created":
+        created()
 
 if __name__ == "__main__":
-    aplicacion()
+    app()
