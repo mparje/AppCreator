@@ -30,8 +30,6 @@ else:
 # ...
 
 
-api = st.secrets["OPENAI_KEY"]
-
 def main():
     
     if "state" not in st.session_state:
