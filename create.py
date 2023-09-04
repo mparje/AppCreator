@@ -1,26 +1,17 @@
-# Importa las bibliotecas necesarias
+#import libraries
 import streamlit as st
-import openai
 from langchain.embeddings import OpenAIEmbeddings
 from langchain.llms import OpenAI
 from langchain.prompts import PromptTemplate
-from langchain import PromptTemplate, LLMChain
+from langchain import PromptTemplate
+from  langchain import PromptTemplate, LLMChain
 from langchain.memory import ConversationBufferMemory
 from langchain.chat_models import ChatOpenAI
+from streamlit_extras.switch_page_button import switch_page
 import ast
+from langchain import OpenAI
 
-# Configura el título de la barra lateral
-st.sidebar.title("OpenAI API Configuration")
-
-# Agrega un campo de entrada de texto para la clave de la API
-api_key = st.sidebar.text_input("Enter your OpenAI API key", type="password")
-
-# Verifica si se ha proporcionado una clave válida
-if not api_key:
-    st.warning("Please enter a valid API key to continue.")
-else:
-    # Configura la clave de la API de OpenAI
-    openai.api_key = api_key
+api = st.secrets["OPENAI_KEY"]
 
 def main():
     
@@ -58,7 +49,7 @@ def main():
         llm = ChatOpenAI (
             temperature=0.2, 
             model_name="gpt-3.5-turbo",
-            openai_api_key=openai.api_key,  # Usar la clave de API proporcionada por el usuario
+            openai_api_key=api,
             ),
         prompt=custom_prompt1,
         verbose="False",
@@ -74,13 +65,13 @@ def main():
         st.session_state.user_input_label = app_output['user_input_label']
         st.session_state.placeholder = app_output['placeholder']
         
-        # Cambiar la variable de estado después de que las variables se hayan almacenado
+        # Change the state variable after the variables have been stored
         st.session_state["state"] = "created"
         
         st.experimental_rerun()
   
 def created():
-    # Verificar el valor de la variable de estado
+    # Check the value of the state variable
     if st.session_state["state"] == "created":
         
         if "generated" not in st.session_state:
@@ -99,28 +90,21 @@ def created():
 
         if st.button("Enter"):
                             
-
-
             custom_prompt2 = PromptTemplate(template=st.session_state.system_prompt, input_variables=["question", "chat_history"])
 
             chain2 = LLMChain(
-                llm=ChatOpenAI(
-                    temperature=0.5,
-                    model_name="gpt-3.5-turbo",
-                    openai_api_key=openai.api_key,
+            llm = ChatOpenAI (
+                temperature=0.5, 
+                model_name="gpt-3.5-turbo",
+                openai_api_key=api,
                 ),
-                prompt=custom_prompt2,
-                verbose="False",
-                memory=st.session_state.memory,
-            )
+            prompt=custom_prompt2,
+            verbose="False",
+            memory = st.session_state.memory
+            ) 
             
-            output = chain2.run(
-                question=user_input,
-                chat_history=st.session_state.memory["chat_history"],  # Corregir la referencia a la memoria
-                return_only_outputs=True,
-            )
-
-                  
+            output = chain2.run(question=user_input, chat_history = st.session_state["memory"], return_only_outputs=True)
+            
             st.session_state.past.append(user_input)
             st.session_state.generated.append(output)
 
@@ -128,9 +112,20 @@ def created():
             
             if st.session_state["generated"]:
                 with st.expander("See Chat History"):
+                    #st.markdown(st.session_state["generated"])
                     for i in range(len(st.session_state["generated"]) - 1, -1, -1):
                         st.markdown(st.session_state["past"][i])
                         st.markdown(st.session_state["generated"][i])
+            
+        # if st.button("Start Over"):
+        #     # Set the state variable back to "main"
+        #     st.session_state["state"] = "main"
+        #     for variable in ['app_name', 'app_emoji', 'app_description', 'system_prompt', 'user_input_label', 'placeholder']:
+        #         st.session_state[variable] = ''
+        #     for variable in ['generated', 'past']:
+        #         st.session_state[variable] = []
+        #     # Force Streamlit to rerun the script
+        #     st.experimental_rerun()
 
 def app():
     if st.session_state.get("state", "main") == "main":
