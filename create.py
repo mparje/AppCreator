@@ -1,41 +1,51 @@
-# Import libraries
+#import libraries
 import streamlit as st
 from langchain.embeddings import OpenAIEmbeddings
 from langchain.llms import OpenAI
 from langchain.prompts import PromptTemplate
 from langchain import PromptTemplate
-from langchain import PromptTemplate, LLMChain
+from  langchain import PromptTemplate, LLMChain
 from langchain.memory import ConversationBufferMemory
 from langchain.chat_models import ChatOpenAI
 from streamlit_extras.switch_page_button import switch_page
 import ast
 from langchain import OpenAI
+# Importa las bibliotecas necesarias
+import openai
+
+# Configura el título de la barra lateral
+st.sidebar.title("OpenAI API Configuration")
+
+# Agrega un campo de entrada de texto para la clave de la API
+api_key = st.sidebar.text_input("Enter your OpenAI API key", type="password")
+
+# Verifica si se ha proporcionado una clave válida
+if not api_key:
+    st.warning("Please enter a valid API key to continue.")
+else:
+    # Configura la clave de la API de OpenAI
+    openai.api_key = api_key
+
+# Resto del código de la aplicación
+# ...
+
+
+api = st.secrets["OPENAI_KEY"]
 
 def main():
+    
+    if "state" not in st.session_state:
+        st.session_state["state"] = "main"
+    
+    for variable in ['app_name', 'app_emoji', 'app_description', 'system_prompt', 'user_input_label', 'placeholder']:
+        if variable not in st.session_state:
+            st.session_state[variable] = ''
+        
     st.title("Streamlit Chatbot Maker🤯")
     st.markdown("Welcome to the future of app creation! This is an LLM-Powered platform that effortlessly crafts other LLM-Powered applications.")
 
-    # Create a two-column layout
-    col1, col2 = st.beta_columns(2)
-
-    # In the left column (col1), place the input field for the API key
-    with col1:
-        api_key = st.text_input("Enter your OpenAI API key:")
-
-    with col2:
-        if st.button("Create"):
-            # Check if the API key is provided
-            if not api_key:
-                st.error("Please enter your OpenAI API key.")
-                return
-
-            app_user_input = st.text_area(label="Describe the app you need below: ", key="appinput",
-                                          placeholder="Eg. An app that gives me YouTube video ideas about a given topic...")
-
-            # Rest of your code
-
-def created():
-    # Rest of your code
+    app_user_input = st.text_area(label= "Describe the app you need below: ", key= "appinput",
+            placeholder="Eg. An app that tells gives me Youtube video ideas about a given topic...")
 
     if st.button("Create"):
         
