@@ -32,36 +32,6 @@ def main():
 def created():
     # Rest of your code
 
-#import libraries
-import streamlit as st
-from langchain.embeddings import OpenAIEmbeddings
-from langchain.llms import OpenAI
-from langchain.prompts import PromptTemplate
-from langchain import PromptTemplate
-from  langchain import PromptTemplate, LLMChain
-from langchain.memory import ConversationBufferMemory
-from langchain.chat_models import ChatOpenAI
-from streamlit_extras.switch_page_button import switch_page
-import ast
-from langchain import OpenAI
-
-api = st.secrets["OPENAI_KEY"]
-
-def main():
-    
-    if "state" not in st.session_state:
-        st.session_state["state"] = "main"
-    
-    for variable in ['app_name', 'app_emoji', 'app_description', 'system_prompt', 'user_input_label', 'placeholder']:
-        if variable not in st.session_state:
-            st.session_state[variable] = ''
-        
-    st.title("Streamlit Chatbot Maker🤯")
-    st.markdown("Welcome to the future of app creation! This is an LLM-Powered platform that effortlessly crafts other LLM-Powered applications.")
-
-    app_user_input = st.text_area(label= "Describe the app you need below: ", key= "appinput",
-            placeholder="Eg. An app that tells gives me Youtube video ideas about a given topic...")
-
     if st.button("Create"):
         
         app_system_prompt = """You are streamlitGPT your job is to help a user generate a simple LLM streamlit app. The user will describe to you what the application will do. You will then take that description and generate a Fun Name, an emoji for the app, an app description, and the system prompt for the LLM. You will use this exact format as shown below for the variables. 
