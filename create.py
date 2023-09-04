@@ -1,4 +1,4 @@
-# Import libraries
+# Importa las bibliotecas
 import streamlit as st
 from langchain.embeddings import OpenAIEmbeddings
 from langchain.llms import OpenAI
@@ -12,23 +12,24 @@ import ast
 from langchain import OpenAI
 
 # Configurar la clave de la API de OpenAI
-api_key = st.sidebar.text_input("Enter your OpenAI API key", type="password")
+def configure_openai_api():
+    st.sidebar.title("OpenAI API Configuration")
+    api_key = st.sidebar.text_input("Enter your OpenAI API key", type="password")
+    if not api_key:
+        st.warning("Please enter a valid API key to continue.")
+        return None
+    else:
+        return api_key
 
-if not api_key:
-    st.warning("Please enter a valid API key to continue.")
-else:
-    openAI.api_key = api_key
-    # Continuar con el resto del código que utiliza la clave de API
-
-def main():
-    
+# Función principal
+def main(api_key):
     if "state" not in st.session_state:
         st.session_state["state"] = "main"
-    
+
     for variable in ['app_name', 'app_emoji', 'app_description', 'system_prompt', 'user_input_label', 'placeholder']:
         if variable not in st.session_state:
             st.session_state[variable] = ''
-        
+
     st.title("Streamlit Chatbot Maker🤯")
     st.markdown("Welcome to the future of app creation! This is an LLM-Powered platform that effortlessly crafts other LLM-Powered applications.")
 
@@ -36,18 +37,18 @@ def main():
             placeholder="Eg. An app that tells gives me Youtube video ideas about a given topic...")
 
     if st.button("Create"):
-        
+
         app_system_prompt = """You are streamlitGPT your job is to help a user generate a simple LLM streamlit app. The user will describe to you what the application will do. You will then take that description and generate a Fun Name, an emoji for the app, an app description, and the system prompt for the LLM. You will use this exact format as shown below for the variables. 
 
         Your output should be a python dictionary only include these variables and nothing else. Output it as python code. 
 
         'app_name': "The name of the app should go here as a string, always add emojis",
-        'app_emoji': "The emjoi that best suits the app name should go here",
+        'app_emoji': "The emoji that best suits the app name should go here",
         'app_description': "A description of the app should go here as a string. be fun and witty",
-        'system_prompt': "You are a chatbot called [name of app here] that helps the human with [describe what the app will do]. Your job is to do [give it its role].\nChat History: [add input variable called chat_history delimited by curly brakets] \nUser Question: [add an input variable called question delimited by curly brakets]",
+        'system_prompt': "You are a chatbot called [name of app here] that helps the human with [describe what the app will do]. Your job is to do [give it its role].\nChat History: [add input variable called chat_history delimited by curly brackets] \nUser Question: [add an input variable called question delimited by curly brackets]",
         'user_input_label': "[add a label for the input box here]",
         'placeholder': "Create a placeholder for the question input box, this should be a relevant example user input",
-        
+
         {app_question}
         """
         custom_prompt1 = PromptTemplate(template=app_system_prompt, input_variables=["app_question"])
@@ -56,7 +57,7 @@ def main():
         llm = ChatOpenAI (
             temperature=0.2, 
             model_name="gpt-3.5-turbo",
-            openai_api_key=api,
+            openai_api_key=api_key,
             ),
         prompt=custom_prompt1,
         verbose="False",
@@ -64,23 +65,24 @@ def main():
 
         app_output_str = chain1.run(app_question=app_user_input, return_only_outputs=True)
         app_output = ast.literal_eval(app_output_str)
-        
+
         st.session_state.app_name = app_output['app_name']
         st.session_state.app_emoji = app_output['app_emoji']
         st.session_state.app_description = app_output['app_description']
         st.session_state.system_prompt = app_output['system_prompt']
         st.session_state.user_input_label = app_output['user_input_label']
         st.session_state.placeholder = app_output['placeholder']
-        
+
         # Change the state variable after the variables have been stored
         st.session_state["state"] = "created"
-        
+
         st.experimental_rerun()
-  
-def created():
+
+# Función creada
+def created(api_key):
     # Check the value of the state variable
     if st.session_state["state"] == "created":
-        
+
         if "generated" not in st.session_state:
             st.session_state["generated"] = []
 
@@ -91,54 +93,47 @@ def created():
         st.markdown(f"{st.session_state.app_emoji} {st.session_state.app_description}")
 
         if "memory" not in st.session_state:
-                st.session_state["memory"] = ConversationBufferMemory(memory_key="chat_history", input_key= "question")
+            st.session_state["memory"] = ConversationBufferMemory(memory_key="chat_history", input_key= "question")
 
         user_input = st.text_input(label=st.session_state.user_input_label, placeholder=st.session_state.placeholder)
 
         if st.button("Enter"):
-                            
+
             custom_prompt2 = PromptTemplate(template=st.session_state.system_prompt, input_variables=["question", "chat_history"])
 
             chain2 = LLMChain(
             llm = ChatOpenAI (
                 temperature=0.5, 
                 model_name="gpt-3.5-turbo",
-                openai_api_key=api,
+                openai_api_key=api_key,
                 ),
             prompt=custom_prompt2,
             verbose="False",
             memory = st.session_state.memory
             ) 
-            
+
             output = chain2.run(question=user_input, chat_history = st.session_state["memory"], return_only_outputs=True)
-            
+
             st.session_state.past.append(user_input)
             st.session_state.generated.append(output)
 
             st.markdown(output)
-            
+
             if st.session_state["generated"]:
                 with st.expander("See Chat History"):
                     #st.markdown(st.session_state["generated"])
                     for i in range(len(st.session_state["generated"]) - 1, -1, -1):
                         st.markdown(st.session_state["past"][i])
                         st.markdown(st.session_state["generated"][i])
-            
-        # if st.button("Start Over"):
-        #     # Set the state variable back to "main"
-        #     st.session_state["state"] = "main"
-        #     for variable in ['app_name', 'app_emoji', 'app_description', 'system_prompt', 'user_input_label', 'placeholder']:
-        #         st.session_state[variable] = ''
-        #     for variable in ['generated', 'past']:
-        #         st.session_state[variable] = []
-        #     # Force Streamlit to rerun the script
-        #     st.experimental_rerun()
 
+# Función de la aplicación principal
 def app():
-    if st.session_state.get("state", "main") == "main":
-        main()
-    elif st.session_state["state"] == "created":
-        created()
+    api_key = configure_openai_api()  # Obtener la clave API de OpenAI
+    if api_key:
+        if st.session_state.get("state", "main") == "main":
+            main(api_key)
+        elif st.session_state["state"] == "created":
+            created(api_key)
 
 if __name__ == "__main__":
     app()
