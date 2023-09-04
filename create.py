@@ -37,13 +37,6 @@ def main():
 def created():
     # Rest of your code
 
-
-
-
-
-def created():
-    # Rest of your code
-
     if st.button("Create"):
         
         app_system_prompt = """You are streamlitGPT your job is to help a user generate a simple LLM streamlit app. The user will describe to you what the application will do. You will then take that description and generate a Fun Name, an emoji for the app, an app description, and the system prompt for the LLM. You will use this exact format as shown below for the variables. 
